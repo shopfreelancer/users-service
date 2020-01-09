@@ -2,6 +2,7 @@ package com.shopfreelancer.userservice.service;
 
 import com.shopfreelancer.userservice.io.entity.UserEntity;
 import com.shopfreelancer.userservice.io.repository.UserRepository;
+import com.shopfreelancer.userservice.shared.Utils;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private Utils utils;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, Utils utils) {
         this.userRepository = userRepository;
+        this.utils = utils;
     }
 
     @Override
@@ -28,7 +31,8 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userDto, userEntity);
 
         userEntity.setEncryptedPassword("encryptedtestpassword");
-        userEntity.setUserId("testuserid");
+        String publicUserId = utils.generateUserId(30);
+        userEntity.setUserId(publicUserId);
 
         UserEntity savedUser = userRepository.save(userEntity);
 

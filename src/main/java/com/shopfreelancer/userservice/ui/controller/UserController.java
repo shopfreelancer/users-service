@@ -1,6 +1,7 @@
 package com.shopfreelancer.userservice.ui.controller;
 
 import com.shopfreelancer.userservice.ui.model.request.UserDetailsRequestModel;
+import com.shopfreelancer.userservice.ui.model.response.UserRest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,8 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@RequestBody UserDetailsRequestModel userDetails){
-        return "user created";
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails){
+        return null;
     }
 
     @PutMapping

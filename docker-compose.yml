@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+
+  postgres:
+    image: library/postgres:10.6
+    ports:
+      - "5432:5432"
+    # volumes:
+      # - ../db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=users
+      - POSTGRES_USER=users-service
+      - POSTGRES_PASSWORD=krjsHqyhT9cNG

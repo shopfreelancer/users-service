@@ -5,6 +5,9 @@ import com.shopfreelancer.userservice.io.repository.UserRepository;
 import com.shopfreelancer.userservice.shared.Utils;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,10 +15,12 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private Utils utils;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, Utils utils) {
+    public UserServiceImpl(UserRepository userRepository, Utils utils, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.utils = utils;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -30,7 +35,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto, userEntity);
 
-        userEntity.setEncryptedPassword("encryptedtestpassword");
+        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
 
@@ -39,5 +44,10 @@ public class UserServiceImpl implements UserService {
         UserDto returnUser = new UserDto();
         BeanUtils.copyProperties(savedUser, returnUser);
         return returnUser;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        return null;
     }
 }

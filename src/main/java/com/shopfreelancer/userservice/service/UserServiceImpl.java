@@ -5,10 +5,13 @@ import com.shopfreelancer.userservice.io.repository.UserRepository;
 import com.shopfreelancer.userservice.shared.Utils;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,7 +50,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        if(userEntity == null) throw new UsernameNotFoundException(email);
+        return new User(email, userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 }

@@ -20,18 +20,27 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserService userService;
-    private Environment env;
+    private Environment environment;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        log.info(env.getProperty("app.sign-up-url"));
+
         http.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST, env.getProperty("app.sign-up-url")).permitAll()
-                .anyRequest().authenticated();
+                .authorizeRequests().antMatchers(HttpMethod.POST, environment.getProperty("app.sign-up-url")).permitAll()
+                .anyRequest().authenticated()
+                .and().addFilter(getAuthenticationFilter() );
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    private AuthenticationFilter getAuthenticationFilter() throws Exception
+    {
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, environment, authenticationManager());
+
+        authenticationFilter.setFilterProcessesUrl("/login");
+        return authenticationFilter;
     }
 }

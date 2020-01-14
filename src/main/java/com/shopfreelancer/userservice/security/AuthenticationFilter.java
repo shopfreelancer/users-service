@@ -1,6 +1,7 @@
 package com.shopfreelancer.userservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shopfreelancer.userservice.SpringApplicationContext;
 import com.shopfreelancer.userservice.service.UserService;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
 import com.shopfreelancer.userservice.ui.model.request.UserLoginRequestModel;

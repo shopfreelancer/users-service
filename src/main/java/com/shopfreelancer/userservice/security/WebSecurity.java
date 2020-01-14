@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -25,10 +26,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        http.headers().frameOptions().disable();
         http.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST, environment.getProperty("app.sign-up-url")).permitAll()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, environment.getProperty("app.sign-up-url")).permitAll()
                 .anyRequest().authenticated()
-                .and().addFilter(getAuthenticationFilter() );
+                .and()
+                .addFilter(getAuthenticationFilter())
+                .addFilter(new AuthorizationFilter(authenticationManager()));
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
@@ -40,7 +48,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     {
         AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, environment, authenticationManager());
 
-        authenticationFilter.setFilterProcessesUrl("/login");
+        authenticationFilter.setFilterProcessesUrl("/users/login");
         return authenticationFilter;
     }
 }

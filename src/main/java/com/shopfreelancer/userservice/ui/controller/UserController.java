@@ -25,7 +25,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
     public UserRest getUser(@PathVariable String id) {
         UserRest userRest = new UserRest();
 

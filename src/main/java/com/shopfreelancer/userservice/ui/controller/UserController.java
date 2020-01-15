@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("users")
 @Slf4j
@@ -77,5 +80,20 @@ public class UserController {
 
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
+    }
+
+    @GetMapping
+    public List<UserRest> getUsers(@RequestParam(value="page", defaultValue = "0") int page,
+                                   @RequestParam(value="limit", defaultValue = "25") int limit){
+        List<UserRest> returnList = new ArrayList<>();
+        List<UserDto> users = userService.getUsers(page, limit);
+
+        for(UserDto userDto : users){
+            UserRest userModel = new UserRest();
+            BeanUtils.copyProperties(userDto, userModel);
+            returnList.add(userModel);
+        }
+
+        return returnList;
     }
 }

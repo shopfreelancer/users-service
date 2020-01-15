@@ -1,5 +1,8 @@
 package com.shopfreelancer.userservice.ui.model.response;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum ErrorMessages {
 
     MISSING_REQUIRED_FIELD("Missing required field. Please check documentation for required fields"),
@@ -14,9 +17,6 @@ public enum ErrorMessages {
 
     private String errorMessage;
 
-    ErrorMessages(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
 
     /**
      * @return the errorMessage

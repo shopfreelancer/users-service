@@ -1,9 +1,11 @@
 package com.shopfreelancer.userservice.service;
 
+import com.shopfreelancer.userservice.exceptions.UserServiceException;
 import com.shopfreelancer.userservice.io.entity.UserEntity;
 import com.shopfreelancer.userservice.io.repository.UserRepository;
 import com.shopfreelancer.userservice.shared.Utils;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
+import com.shopfreelancer.userservice.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -101,5 +103,16 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if(userEntity == null){
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userRepository.delete(userEntity);
     }
 }

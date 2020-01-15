@@ -1,11 +1,12 @@
 package com.shopfreelancer.userservice.ui.controller;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.shopfreelancer.userservice.exceptions.UserServiceException;
 import com.shopfreelancer.userservice.service.UserService;
 import com.shopfreelancer.userservice.shared.dto.UserDto;
 import com.shopfreelancer.userservice.ui.model.request.UserDetailsRequestModel;
 import com.shopfreelancer.userservice.ui.model.response.ErrorMessages;
+import com.shopfreelancer.userservice.ui.model.response.OperationStatusModel;
+import com.shopfreelancer.userservice.ui.model.response.RequestOperationStatus;
 import com.shopfreelancer.userservice.ui.model.response.UserRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -67,8 +68,14 @@ public class UserController {
         return userRest;
     }
 
-    @DeleteMapping
-    public void deleteUser() {
+    @DeleteMapping(path = "/{id}")
+    public OperationStatusModel deleteUser(@PathVariable String id) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
 
+        userService.deleteUser(id);
+
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
     }
 }

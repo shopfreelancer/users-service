@@ -1,5 +1,6 @@
 package com.shopfreelancer.userservice.security;
 
+import com.shopfreelancer.userservice.SpringApplicationContext;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
+
+    private Environment environment;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
     public AuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -37,15 +45,16 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
 
-        //Environment environment = (Environment) SpringApplicationContext.getBean("environment");
         String token = request.getHeader("Authorization");
+
+        String secretKey = environment.getProperty("app.token.secret");
 
         if (token != null) {
 
             token = token.replace("Bearer ", "");
 
             String user = Jwts.parser()
-                    .setSigningKey( "j97adasdasd82c" )
+                    .setSigningKey( secretKey )
                     .parseClaimsJws( token )
                     .getBody()
                     .getSubject();

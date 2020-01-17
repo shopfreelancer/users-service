@@ -33,7 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(getAuthenticationFilter())
-                .addFilter(new AuthorizationFilter(authenticationManager()));
+                .addFilter(getAutorizationFilter());
 
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -42,6 +42,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    private AuthorizationFilter getAutorizationFilter() throws Exception {
+        AuthorizationFilter authorizationFilter = new AuthorizationFilter(authenticationManager());
+        authorizationFilter.setEnvironment(environment);
+        return authorizationFilter;
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception

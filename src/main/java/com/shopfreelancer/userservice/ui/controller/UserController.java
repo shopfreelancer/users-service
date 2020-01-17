@@ -11,7 +11,6 @@ import com.shopfreelancer.userservice.ui.model.response.UserRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,10 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/{id}",
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-    )
+    @GetMapping(path = "/{id}")
     public UserRest getUser(@PathVariable String id) {
         UserRest userRest = new UserRest();
 
@@ -95,5 +91,15 @@ public class UserController {
         }
 
         return returnList;
+    }
+
+    @GetMapping(path = "/email-verification")
+    public OperationStatusModel verifyUserEmailAddress(@RequestParam(value = "token") String token){
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+        operationStatusModel.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
+
+        boolean isVerified = userService.verifyEmailToken(token);
+
+        return operationStatusModel;
     }
 }
